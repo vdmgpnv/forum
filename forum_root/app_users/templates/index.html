@@ -1,0 +1,24 @@
+{% extends 'layout/base.html' %}
+
+
+
+{% block content %}
+    {% for sec, thread in secthread.items %}
+    <div class="thread-list">
+        <h2><a href="{% url 'section' sec.pk %}">{{sec.section_name}}</a></h2>
+        
+            <ul>
+                {% for t in thread %}
+                <a href="{% url 'thread' t.pk %}"><li>{{ t.thread_name }}</li></a>
+                {% endfor %}
+            </ul>
+    </div>
+        {% endfor %}       
+    
+{% endblock %}
+
+
+
+
+
+

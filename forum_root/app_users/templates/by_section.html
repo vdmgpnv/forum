@@ -1,0 +1,13 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+<h2>{{section.section_name}}</h2>
+<a href="{% url 'create_th' section.pk %}"><button class="pressed-button">Создать обсуждение</button></a>
+<ul>
+{% for thread in thread_list %}
+
+    <a href="{% url 'thread' thread.pk %}"><li>{{ thread.thread_name }}</li></a>
+
+{% endfor %}
+</ul>
+{% endblock %}

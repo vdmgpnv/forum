@@ -1,5 +1,6 @@
-from msilib.schema import LockPermissions
-import time
+from tabnanny import verbose
+from ckeditor_uploader.fields import RichTextUploadingField
+
 from django.db import models
 
 from app_users.models import AdvUser
@@ -17,22 +18,25 @@ class Section(models.Model):
 class Thread(models.Model):
     thread_name = models.CharField(max_length=100, verbose_name='Тема')
     section_id = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='section', verbose_name='Раздел')
-    thread_count = models.IntegerField(verbose_name='Кол-во сообщений', default=2)    
+    is_open = models.BooleanField(verbose_name='Открыто ли обсуждение?', default=True)   
     
     def __str__(self) -> str:
         return self.thread_name
     
+    
     class Meta:
-        verbose_name = 'Тема'
+        verbose_name = 'Тему'
         verbose_name_plural = 'Темы'
     
     
 class Post(models.Model):
-    tread_id = models.ForeignKey(Thread, null=True, on_delete=models.CASCADE, related_name='thread', verbose_name='Тема')
-    user_id = models.ForeignKey(AdvUser, null=False, on_delete=models.CASCADE, related_name='user', verbose_name='Пользователь')
+    tread_id = models.ForeignKey(Thread, null=True, on_delete=models.CASCADE, related_name='posts', verbose_name='Тема')
+    user_id = models.ForeignKey(AdvUser, null=False, on_delete=models.CASCADE, related_name='posts', verbose_name='Пользователь')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Опубликовано')
-    post_count = models.IntegerField(verbose_name='Количество сообщений', default=3)
-    text = models.TextField(max_length=500, verbose_name='Текст сообщения')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Изменено')
+    text = models.TextField(max_length=1000, verbose_name='Текст сообщения')
+    likes = models.IntegerField(default=0)
+    dislikes = models.IntegerField(default=0)
     
     def show_post(self):
         return self.text[0:100] + '...'
@@ -43,3 +47,7 @@ class Post(models.Model):
     
     def __str__(self) -> str:
         return self.text[:10] + '...'
+    
+    
+
+    

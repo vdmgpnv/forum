@@ -1,5 +1,4 @@
-from dataclasses import fields
-from tkinter import Widget
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import AdvUser
@@ -13,4 +12,4 @@ class AuthForm(forms.Form):
 class RegistrationForm(UserCreationForm):
     class Meta:
         model = AdvUser
-        fields = ('username', 'first_name', 'last_name', 'email', 'date_of_birth')
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'send_messages', 'avatar')

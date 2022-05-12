@@ -1,0 +1,24 @@
+{% extends 'layout/base.html' %}
+
+
+{% block content %}
+<ul>
+    {% for post in posts %}
+    <li>{{ post.text | safe }}</li>
+    {% endfor %}
+</ul>
+
+<hr>
+{% if user.is_authenticated %}
+<div class="create-post">
+    <h3>Введите сообщение</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.post_text }}
+        <button class="pressed-button" type="submit">Отправить</button>
+    </form>
+</div>
+{% else %}
+<h2>Отправлять сообщения могут только зарегистрированные пользователи, <a href="{% url 'index' %}">Войти</a></h2>
+{% endif %}
+{% endblock %}
