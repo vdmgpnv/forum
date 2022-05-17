@@ -1,8 +1,8 @@
-from concurrent.futures import thread
-from multiprocessing import context
+
 from django.shortcuts import redirect, render
 from django.db.models import Count
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 from app_users.models import AdvUser
 from .models import Section, Thread, Post
@@ -15,7 +15,7 @@ from .models import Post, Section, Thread
 def index(request):
     d = {}
     for sec in DataMixin.sections:
-        d[sec] = Thread.objects.filter(section_id=sec.pk).annotate(cnt=Count('posts')).order_by('cnt')[:5]
+        d[sec] = Thread.objects.filter(section_id=sec.pk).annotate(cnt=Count('posts')).order_by('-cnt')[:5]
     context = {
         'sections' : DataMixin.sections,
         'secthread' : d
@@ -29,18 +29,19 @@ class ThreadListView(DataMixin, ListView):
     
     def get_context_data(self, **kwargs):
         context =  super().get_context_data(**kwargs)
-        context['thread_list'] = Thread.objects.filter(section_id=self.kwargs.get('pk')).filter(is_active=True)
-        context['sections'] = self.sections
+        context['thread_list'] = Thread.objects.filter(section_id=self.kwargs.get('pk')).filter(is_open=True)
         context['section'] = Section.objects.get(pk=self.kwargs.get('pk'))
         return context
     
 def thread_view(request, pk):
     posts = Post.objects.filter(tread_id=pk)
+    thread = Thread.objects.get(pk=pk)
     post_form = PostForm
     context = {
         'sections' : DataMixin.sections,
         'posts' : posts,
-        'form' : post_form
+        'form' : post_form,
+        'thread' : thread
     }
     if request.method == 'POST':
         post_form = PostForm(request.POST)

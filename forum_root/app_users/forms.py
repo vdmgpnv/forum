@@ -12,4 +12,11 @@ class AuthForm(forms.Form):
 class RegistrationForm(UserCreationForm):
     class Meta:
         model = AdvUser
-        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'send_messages', 'avatar')
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'avatar')
+        
+class UpdateProfileForm(forms.Form):
+    info = forms.CharField(label='Расскажите о себе',
+                   widget=forms.Textarea(attrs={'class': 'ckeditor'}))
+    class Meta:
+        model = AdvUser
+        fields = ('info',)
